@@ -4,8 +4,8 @@ docs_dir: home
 theme:
   name: material
   language: en
-  logo: /assets/images/iceberg-logo-icon.png
-  favicon: /assets/images/favicon-96x96.png
+  logo: assets/images/iceberg-logo-icon.png
+  favicon: assets/images/favicon-96x96.png
   features:
     - navigation.tabs
     - navigation.path
