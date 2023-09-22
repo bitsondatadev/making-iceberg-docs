@@ -15,7 +15,7 @@
         <link rel="next" href="../ASF/">
       
       <link rel="icon" href="../assets/images/favicon-96x96.png">
-      <meta name="generator" content="mkdocs-1.5.2, mkdocs-material-9.1.21">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.1.21">
     
     
       
@@ -1171,7 +1171,7 @@
   
   
     <li class="md-nav__item">
-      <a href="https://iceberg.apache.org/javadoc/latest/" class="md-nav__link">
+      <a href="../javadoc/latest/" class="md-nav__link">
         Javadoc
       </a>
     </li>
@@ -2512,9 +2512,9 @@
 <p>Each manifest file in the manifest list is stored with information about its contents, like partition value ranges, used to speed up metadata operations.</p>
 <h3 id="manifest-file">Manifest file</h3>
 <p>A <strong>manifest file</strong> is a metadata file that lists a subset of data files that make up a snapshot.</p>
-<p>Each data file in a manifest is stored with a <a href="#partition-tuple">partition tuple</a>, column-level stats, and summary information used to prune splits during <a href="../docs/performance/#scan-planning">scan planning</a>.</p>
+<p>Each data file in a manifest is stored with a <a href="#partition-tuple">partition tuple</a>, column-level stats, and summary information used to prune splits during <a href="../docs/latest/performance/#scan-planning">scan planning</a>.</p>
 <h3 id="partition-spec">Partition spec</h3>
-<p>A <strong>partition spec</strong> is a description of how to <a href="../docs/partitioning/">partition</a> data in a table.</p>
+<p>A <strong>partition spec</strong> is a description of how to <a href="../docs/latest/partitioning/">partition</a> data in a table.</p>
 <p>A spec consists of a list of source columns and transforms. A transform produces a partition value from a source value. For example, <code>date(ts)</code> produces the date associated with a timestamp column named <code>ts</code>.</p>
 <h3 id="partition-tuple">Partition tuple</h3>
 <p>A <strong>partition tuple</strong> is a tuple or struct of partition data stored with each data file.</p>
