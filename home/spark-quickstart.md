@@ -1,13 +1,5 @@
 ---
 title: "Spark and Iceberg Quickstart"
-weight: 100
-url: spark-quickstart
-aliases:
-    - "quickstart"
-    - "quickstarts"
-    - "getting-started"
-disableSidebar: true
-disableToc: true
 ---
 <!--
  - Licensed to the Apache Software Foundation (ASF) under one or more
@@ -29,7 +21,7 @@ disableToc: true
 ## Spark and Iceberg Quickstart
 
 This guide will get you up and running with an Iceberg and Spark environment, including sample code to
-highlight some powerful features. You can learn more about Iceberg's Spark runtime by checking out the [Spark](docs/spark-ddl.md) section.
+highlight some powerful features. You can learn more about Iceberg's Spark runtime by checking out the [Spark](docs/latest/spark-ddl.md) section.
 
 - [Docker-Compose](#docker-compose)
 - [Creating a table](#creating-a-table)
@@ -155,7 +147,7 @@ You can then run any of the following commands to start a Spark session.
 
 ### Creating a table
 
-To create your first Iceberg table in Spark, run a [`CREATE TABLE`](docs/spark-ddl.md#create-table) command. Let's create a table
+To create your first Iceberg table in Spark, run a [`CREATE TABLE`](docs/latest/spark-ddl.md#create-table) command. Let's create a table
 using `demo.nyc.taxis` where `demo` is the catalog name, `nyc` is the database name, and `taxis` is the table name.
 
 
@@ -208,10 +200,10 @@ using `demo.nyc.taxis` where `demo` is the catalog name, `nyc` is the database n
 
 Iceberg catalogs support the full range of SQL DDL commands, including:
 
-* [`CREATE TABLE ... PARTITIONED BY`](docs/spark-ddl.md#create-table)
-* [`CREATE TABLE ... AS SELECT`](docs/spark-ddl.md#create-table--as-select)
-* [`ALTER TABLE`](docs/spark-ddl.md#alter-table)
-* [`DROP TABLE`](docs/spark-ddl.md#drop-table)
+* [`CREATE TABLE ... PARTITIONED BY`](docs/latest/spark-ddl.md#create-table)
+* [`CREATE TABLE ... AS SELECT`](docs/latest/spark-ddl.md#create-table--as-select)
+* [`ALTER TABLE`](docs/latest/spark-ddl.md#alter-table)
+* [`DROP TABLE`](docs/latest/spark-ddl.md#drop-table)
 
 ### Writing Data to a Table
 
@@ -282,7 +274,7 @@ To read a table, simply use the Iceberg table's name.
 Iceberg has several catalog back-ends that can be used to track tables, like JDBC, Hive MetaStore and Glue.
 Catalogs are configured using properties under `spark.sql.catalog.(catalog_name)`. In this guide,
 we use JDBC, but you can follow these instructions to configure other catalog types. To learn more, check out
-the [Catalog](docs/spark-configuration.md#catalogs) page in the Spark section.
+the [Catalog](docs/latest/spark-configuration.md#catalogs) page in the Spark section.
 
 This configuration creates a path-based catalog named `local` for tables under `$PWD/warehouse` and adds support for Iceberg tables to Spark's built-in catalog.
 
@@ -347,4 +339,4 @@ If you already have a Spark environment, you can add Iceberg, using the `--packa
 
 #### Learn More
 
-Now that you're up an running with Iceberg and Spark, check out the [Iceberg-Spark docs](docs/spark-ddl.md) to learn more!
+Now that you're up an running with Iceberg and Spark, check out the [Iceberg-Spark docs](docs/latest/spark-ddl.md) to learn more!

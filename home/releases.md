@@ -1,8 +1,5 @@
 ---
 title: "Releases"
-weight: 1100
-url: releases
-disableSidebar: true
 ---
 <!--
  - Licensed to the Apache Software Foundation (ASF) under one or more

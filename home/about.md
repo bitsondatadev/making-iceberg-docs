@@ -1,5 +1,5 @@
 ---
-title: "Security"
+Title: What is Iceberg?
 ---
 <!--
  - Licensed to the Apache Software Foundation (ASF) under one or more
@@ -18,16 +18,13 @@ title: "Security"
  - limitations under the License.
  -->
 
-# Reporting Security Issues
-
-The Apache Iceberg Project uses the standard process outlined by the [Apache
-Security Team](https://www.apache.org/security/) for reporting vulnerabilities.
-Note that vulnerabilities should not be publicly disclosed until the project has
-responded.
-
-To report a possible security vulnerability, please email <a href="mailto:security@iceberg.apache.org">security@iceberg.apache.org</a>.
-
-
-# Verifying Signed Releases
-
-Please refer to the instructions on the [Release Verification](https://www.apache.org/info/verification.html) page.
+Iceberg is a high-performance format for huge analytic tables. Iceberg brings the reliability and simplicity of SQL tables to big data, while making it possible for engines like Spark, Trino, Flink, Presto, Hive and Impala to safely work with the same tables, at the same time.
+<div class="button-box">
+<ul class="list-inline intro-social-buttons">
+    <li>
+        <a href="/getting-started" class="btn btn-default btn-lg">
+            <span class="network-name">Learn More</span>
+        </a>
+    </li>
+<ul>
+</div>
