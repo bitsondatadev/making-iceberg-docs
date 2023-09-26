@@ -1,0 +1,3327 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon-96x96.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.1.21">
+    
+    
+      
+        <title>Queries - Apache Iceberg</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.eebd395e.min.css">
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#spark-queries" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Apache Iceberg" class="md-header__button md-logo" aria-label="Apache Iceberg" data-md-component="logo">
+      
+  <img src="../../../assets/images/iceberg-logo-icon.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Apache Iceberg
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Queries
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../hive-quickstart/" class="md-tabs__link">
+        Quickstart
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../latest/" class="md-tabs__link">
+        Docs
+      </a>
+    </li>
+  
+
+  
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../../releases/" class="md-tabs__link">
+      Releases
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../../roadmap/" class="md-tabs__link">
+      Roadmap
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../../blogs/" class="md-tabs__link">
+      Blogs
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../../talks/" class="md-tabs__link">
+      Talks
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../../../vendors/" class="md-tabs__link">
+      Vendors
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../community/" class="md-tabs__link">
+        Project
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+
+
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../ASF/" class="md-tabs__link">
+        ASF
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Apache Iceberg" class="md-nav__button md-logo" aria-label="Apache Iceberg" data-md-component="logo">
+      
+  <img src="../../../assets/images/iceberg-logo-icon.png" alt="logo">
+
+    </a>
+    Apache Iceberg
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+          Quickstart
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          Quickstart
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../hive-quickstart/" class="md-nav__link">
+        Hive
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../spark-quickstart/" class="md-nav__link">
+        Spark
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          Docs
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Docs
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+          latest
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          latest
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_1_2" id="__nav_2_1_2_label" tabindex="0">
+          Tables
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_1_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          Tables
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/branching/" class="md-nav__link">
+        Branching and Tagging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/configuration/" class="md-nav__link">
+        Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/evolution/" class="md-nav__link">
+        Evolution
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/maintenance/" class="md-nav__link">
+        Maintenance
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/partitioning/" class="md-nav__link">
+        Partitioning
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/performance/" class="md-nav__link">
+        Performance
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/reliability/" class="md-nav__link">
+        Reliability
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/schemas/" class="md-nav__link">
+        Schemas
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_1_3" id="__nav_2_1_3_label" tabindex="0">
+          Spark
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_1_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          Spark
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/spark-getting-started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/spark-configuration/" class="md-nav__link">
+        Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/spark-ddl/" class="md-nav__link">
+        DDL
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/spark-procedures/" class="md-nav__link">
+        Procedures
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/spark-queries/" class="md-nav__link">
+        Queries
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/spark-structured-streaming/" class="md-nav__link">
+        Structured Streaming
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/spark-writes/" class="md-nav__link">
+        Writes
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_1_4" id="__nav_2_1_4_label" tabindex="0">
+          Flink
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_1_4_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_1_4">
+          <span class="md-nav__icon md-icon"></span>
+          Flink
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/flink/" class="md-nav__link">
+        Flink Getting Started
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/flink-connector/" class="md-nav__link">
+        Flink Connector
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/flink-ddl/" class="md-nav__link">
+        Flink DDL
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/flink-queries/" class="md-nav__link">
+        Flink Queries
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/flink-writes/" class="md-nav__link">
+        Flink Writes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/flink-actions/" class="md-nav__link">
+        Flink Actions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/flink-configuration/" class="md-nav__link">
+        Flink Configuration
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/hive/" class="md-nav__link">
+        Hive
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://trino.io/docs/current/connector/iceberg.html" class="md-nav__link">
+        Trino
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://clickhouse.com/docs/en/engines/table-engines/integrations/iceberg" class="md-nav__link">
+        Clickhouse
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://prestodb.io/docs/current/connector/iceberg.html" class="md-nav__link">
+        Presto
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://docs.dremio.com/data-formats/apache-iceberg/" class="md-nav__link">
+        Dremio
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://docs.starrocks.io/en-us/latest/data_source/catalog/iceberg_catalog" class="md-nav__link">
+        Starrocks
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://docs.aws.amazon.com/athena/latest/ug/querying-iceberg.html" class="md-nav__link">
+        Amazon Athena
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-iceberg-use-cluster.html" class="md-nav__link">
+        Amazon EMR
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://impala.apache.org/docs/build/html/topics/impala_iceberg.html" class="md-nav__link">
+        Impala
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://doris.apache.org/docs/dev/lakehouse/multi-catalog/iceberg" class="md-nav__link">
+        Doris
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1_15" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_1_15" id="__nav_2_1_15_label" tabindex="0">
+          Integrations
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_1_15_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_1_15">
+          <span class="md-nav__icon md-icon"></span>
+          Integrations
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/aws/" class="md-nav__link">
+        AWS
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/dell/" class="md-nav__link">
+        Dell
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/jdbc/" class="md-nav__link">
+        JDBC
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/nessie/" class="md-nav__link">
+        Nessie
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1_16" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_1_16" id="__nav_2_1_16_label" tabindex="0">
+          API
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_1_16_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_1_16">
+          <span class="md-nav__icon md-icon"></span>
+          API
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/java-api-quickstart/" class="md-nav__link">
+        Java Quickstart
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/api/" class="md-nav__link">
+        Java API
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../latest/custom-catalog/" class="md-nav__link">
+        Java Custom Catalog
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../javadoc/latest/" class="md-nav__link">
+        Javadoc
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://py.iceberg.apache.org/" class="md-nav__link">
+        PyIceberg
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+          1.3.1
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          1.3.1
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_2" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2_2" id="__nav_2_2_2_label" tabindex="0">
+          Tables
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_2_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          Tables
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/branching/" class="md-nav__link">
+        Branching and Tagging
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/configuration/" class="md-nav__link">
+        Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/evolution/" class="md-nav__link">
+        Evolution
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/maintenance/" class="md-nav__link">
+        Maintenance
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/partitioning/" class="md-nav__link">
+        Partitioning
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/performance/" class="md-nav__link">
+        Performance
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/reliability/" class="md-nav__link">
+        Reliability
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/schemas/" class="md-nav__link">
+        Schemas
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2_3" id="__nav_2_2_3_label" tabindex="0">
+          Spark
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_3_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          Spark
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/spark-getting-started/" class="md-nav__link">
+        Getting Started
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/spark-configuration/" class="md-nav__link">
+        Configuration
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/spark-ddl/" class="md-nav__link">
+        DDL
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/spark-procedures/" class="md-nav__link">
+        Procedures
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/spark-queries/" class="md-nav__link">
+        Queries
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/spark-structured-streaming/" class="md-nav__link">
+        Structured Streaming
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/spark-writes/" class="md-nav__link">
+        Writes
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_4" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2_4" id="__nav_2_2_4_label" tabindex="0">
+          Flink
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_4_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2_4">
+          <span class="md-nav__icon md-icon"></span>
+          Flink
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/flink/" class="md-nav__link">
+        Flink Getting Started
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/flink-connector/" class="md-nav__link">
+        Flink Connector
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/flink-ddl/" class="md-nav__link">
+        Flink DDL
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/flink-queries/" class="md-nav__link">
+        Flink Queries
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/flink-writes/" class="md-nav__link">
+        Flink Writes
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/flink-actions/" class="md-nav__link">
+        Flink Actions
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/flink-configuration/" class="md-nav__link">
+        Flink Configuration
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/hive/" class="md-nav__link">
+        Hive
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://trino.io/docs/current/connector/iceberg.html" class="md-nav__link">
+        Trino
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://clickhouse.com/docs/en/engines/table-engines/integrations/iceberg" class="md-nav__link">
+        Clickhouse
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://prestodb.io/docs/current/connector/iceberg.html" class="md-nav__link">
+        Presto
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://docs.dremio.com/data-formats/apache-iceberg/" class="md-nav__link">
+        Dremio
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://docs.starrocks.io/en-us/latest/data_source/catalog/iceberg_catalog" class="md-nav__link">
+        Starrocks
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://docs.aws.amazon.com/athena/latest/ug/querying-iceberg.html" class="md-nav__link">
+        Amazon Athena
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-iceberg-use-cluster.html" class="md-nav__link">
+        Amazon EMR
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://impala.apache.org/docs/build/html/topics/impala_iceberg.html" class="md-nav__link">
+        Impala
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://doris.apache.org/docs/dev/lakehouse/multi-catalog/iceberg" class="md-nav__link">
+        Doris
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_15" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2_15" id="__nav_2_2_15_label" tabindex="0">
+          Integrations
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_15_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2_15">
+          <span class="md-nav__icon md-icon"></span>
+          Integrations
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/aws/" class="md-nav__link">
+        AWS
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/dell/" class="md-nav__link">
+        Dell
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/jdbc/" class="md-nav__link">
+        JDBC
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/nessie/" class="md-nav__link">
+        Nessie
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2_16" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2_16" id="__nav_2_2_16_label" tabindex="0">
+          API
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_2_16_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_2_2_16">
+          <span class="md-nav__icon md-icon"></span>
+          API
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/java-api-quickstart/" class="md-nav__link">
+        Java Quickstart
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/api/" class="md-nav__link">
+        Java API
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../docs-1-3-1/custom-catalog/" class="md-nav__link">
+        Java Custom Catalog
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../javadoc/1.3.1/" class="md-nav__link">
+        Javadoc
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://py.iceberg.apache.org/" class="md-nav__link">
+        PyIceberg
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../releases/" class="md-nav__link">
+        Releases
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../roadmap/" class="md-nav__link">
+        Roadmap
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../blogs/" class="md-nav__link">
+        Blogs
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../talks/" class="md-nav__link">
+        Talks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../vendors/" class="md-nav__link">
+        Vendors
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+          Project
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_8">
+          <span class="md-nav__icon md-icon"></span>
+          Project
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../community/" class="md-nav__link">
+        Join
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../spec/" class="md-nav__link">
+        Spec
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../view-spec/" class="md-nav__link">
+        View spec
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../puffin-spec/" class="md-nav__link">
+        Puffin spec
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../multi-engine-support/" class="md-nav__link">
+        Multi-engine support
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../how-to-release/" class="md-nav__link">
+        How to release
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../terms/" class="md-nav__link">
+        Terms
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+          ASF
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_9">
+          <span class="md-nav__icon md-icon"></span>
+          ASF
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../ASF/" class="md-nav__link">
+        ASF
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.apache.org/foundation/sponsorship.html" class="md-nav__link">
+        Sponsorship
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.apache.org/events/current-event.html" class="md-nav__link">
+        Events
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.apache.org/licenses/" class="md-nav__link">
+        License
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.apache.org/security/" class="md-nav__link">
+        Security
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://www.apache.org/foundation/thanks.html" class="md-nav__link">
+        Sponsors
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#querying-with-sql" class="md-nav__link">
+    Querying with SQL
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#querying-with-dataframes" class="md-nav__link">
+    Querying with DataFrames
+  </a>
+  
+    <nav class="md-nav" aria-label="Querying with DataFrames">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#catalogs-with-dataframereader" class="md-nav__link">
+    Catalogs with DataFrameReader
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#time-travel" class="md-nav__link">
+    Time travel
+  </a>
+  
+    <nav class="md-nav" aria-label="Time travel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sql" class="md-nav__link">
+    SQL
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dataframe" class="md-nav__link">
+    DataFrame
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#incremental-read" class="md-nav__link">
+    Incremental read
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inspecting-tables" class="md-nav__link">
+    Inspecting tables
+  </a>
+  
+    <nav class="md-nav" aria-label="Inspecting tables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#history" class="md-nav__link">
+    History
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#metadata-log-entries" class="md-nav__link">
+    Metadata Log Entries
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#snapshots" class="md-nav__link">
+    Snapshots
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#files" class="md-nav__link">
+    Files
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#manifests" class="md-nav__link">
+    Manifests
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#partitions" class="md-nav__link">
+    Partitions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#all-metadata-tables" class="md-nav__link">
+    All Metadata Tables
+  </a>
+  
+    <nav class="md-nav" aria-label="All Metadata Tables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#all-data-files" class="md-nav__link">
+    All Data Files
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#all-manifests" class="md-nav__link">
+    All Manifests
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    References
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inspecting-with-dataframes" class="md-nav__link">
+    Inspecting with DataFrames
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#time-travel-with-metadata-tables" class="md-nav__link">
+    Time Travel with Metadata Tables
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<!--
+ - Licensed to the Apache Software Foundation (ASF) under one or more
+ - contributor license agreements.  See the NOTICE file distributed with
+ - this work for additional information regarding copyright ownership.
+ - The ASF licenses this file to You under the Apache License, Version 2.0
+ - (the "License"); you may not use this file except in compliance with
+ - the License.  You may obtain a copy of the License at
+ -
+ -   http://www.apache.org/licenses/LICENSE-2.0
+ -
+ - Unless required by applicable law or agreed to in writing, software
+ - distributed under the License is distributed on an "AS IS" BASIS,
+ - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ - See the License for the specific language governing permissions and
+ - limitations under the License.
+ -->
+
+<h1 id="spark-queries">Spark Queries</h1>
+<p>To use Iceberg in Spark, first configure <a href="../spark-configuration/">Spark catalogs</a>. Iceberg uses Apache Spark's DataSourceV2 API for data source and catalog implementations.</p>
+<h2 id="querying-with-sql">Querying with SQL</h2>
+<p>In Spark 3, tables use identifiers that include a <a href="../spark-configuration/#using-catalogs">catalog name</a>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="p">;</span><span class="w"> </span><span class="c1">-- catalog: prod, namespace: db, table: table</span>
+</code></pre></div>
+<p>Metadata tables, like <code>history</code> and <code>snapshots</code>, can use the Iceberg table name as a namespace.</p>
+<p>For example, to read from the <code>files</code> metadata table for <code>prod.db.table</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="p">.</span><span class="n">files</span><span class="p">;</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>content</th>
+<th>file_path</th>
+<th>file_format</th>
+<th>spec_id</th>
+<th>partition</th>
+<th>record_count</th>
+<th>file_size_in_bytes</th>
+<th>column_sizes</th>
+<th>value_counts</th>
+<th>null_value_counts</th>
+<th>nan_value_counts</th>
+<th>lower_bounds</th>
+<th>upper_bounds</th>
+<th>key_metadata</th>
+<th>split_offsets</th>
+<th>equality_ids</th>
+<th>sort_order_id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>s3:/.../table/data/00000-3-8d6d60e8-d427-4809-bcf0-f5d45a4aad96.parquet</td>
+<td>PARQUET</td>
+<td>0</td>
+<td>{1999-01-01, 01}</td>
+<td>1</td>
+<td>597</td>
+<td>[1 -&gt; 90, 2 -&gt; 62]</td>
+<td>[1 -&gt; 1, 2 -&gt; 1]</td>
+<td>[1 -&gt; 0, 2 -&gt; 0]</td>
+<td>[]</td>
+<td>[1 -&gt; , 2 -&gt; c]</td>
+<td>[1 -&gt; , 2 -&gt; c]</td>
+<td>null</td>
+<td>[4]</td>
+<td>null</td>
+<td>null</td>
+</tr>
+<tr>
+<td>0</td>
+<td>s3:/.../table/data/00001-4-8d6d60e8-d427-4809-bcf0-f5d45a4aad96.parquet</td>
+<td>PARQUET</td>
+<td>0</td>
+<td>{1999-01-01, 02}</td>
+<td>1</td>
+<td>597</td>
+<td>[1 -&gt; 90, 2 -&gt; 62]</td>
+<td>[1 -&gt; 1, 2 -&gt; 1]</td>
+<td>[1 -&gt; 0, 2 -&gt; 0]</td>
+<td>[]</td>
+<td>[1 -&gt; , 2 -&gt; b]</td>
+<td>[1 -&gt; , 2 -&gt; b]</td>
+<td>null</td>
+<td>[4]</td>
+<td>null</td>
+<td>null</td>
+</tr>
+<tr>
+<td>0</td>
+<td>s3:/.../table/data/00002-5-8d6d60e8-d427-4809-bcf0-f5d45a4aad96.parquet</td>
+<td>PARQUET</td>
+<td>0</td>
+<td>{1999-01-01, 03}</td>
+<td>1</td>
+<td>597</td>
+<td>[1 -&gt; 90, 2 -&gt; 62]</td>
+<td>[1 -&gt; 1, 2 -&gt; 1]</td>
+<td>[1 -&gt; 0, 2 -&gt; 0]</td>
+<td>[]</td>
+<td>[1 -&gt; , 2 -&gt; a]</td>
+<td>[1 -&gt; , 2 -&gt; a]</td>
+<td>null</td>
+<td>[4]</td>
+<td>null</td>
+<td>null</td>
+</tr>
+</tbody>
+</table>
+<h2 id="querying-with-dataframes">Querying with DataFrames</h2>
+<p>To load a table as a DataFrame, use <code>table</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kd">val</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">spark</span><span class="p">.</span><span class="n">table</span><span class="p">(</span><span class="s">&quot;prod.db.table&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="catalogs-with-dataframereader">Catalogs with DataFrameReader</h3>
+<p>Paths and table names can be loaded with Spark's <code>DataFrameReader</code> interface. How tables are loaded depends on how
+the identifier is specified. When using <code>spark.read.format("iceberg").load(table)</code> or <code>spark.table(table)</code> the <code>table</code>
+variable can take a number of forms as listed below:</p>
+<ul>
+<li><code>file:///path/to/table</code>: loads a HadoopTable at given path</li>
+<li><code>tablename</code>: loads <code>currentCatalog.currentNamespace.tablename</code></li>
+<li><code>catalog.tablename</code>: loads <code>tablename</code> from the specified catalog.</li>
+<li><code>namespace.tablename</code>: loads <code>namespace.tablename</code> from current catalog</li>
+<li><code>catalog.namespace.tablename</code>: loads <code>namespace.tablename</code> from the specified catalog.</li>
+<li><code>namespace1.namespace2.tablename</code>: loads <code>namespace1.namespace2.tablename</code> from current catalog</li>
+</ul>
+<p>The above list is in order of priority. For example: a matching catalog will take priority over any namespace resolution.</p>
+<h3 id="time-travel">Time travel</h3>
+<h4 id="sql">SQL</h4>
+<p>Spark 3.3 and later supports time travel in SQL queries using <code>TIMESTAMP AS OF</code> or <code>VERSION AS OF</code> clauses.
+The <code>VERSION AS OF</code> clause can contain a long snapshot ID or a string branch or tag name.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Note: If the name of a branch or tag is the same as a snapshot ID, then the snapshot which is selected for time travel is the snapshot
+with the given snapshot ID. For example, consider the case where there is a tag named '1' and it references snapshot with ID 2. 
+If the version travel clause is <code>VERSION AS OF '1'</code>, time travel will be done to the snapshot with ID 1. 
+If this is not desired, rename the tag or branch with a well-defined prefix such as 'snapshot-1'.</p>
+</div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1">-- time travel to October 26, 1986 at 01:21:00</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="s1">&#39;1986-10-26 01:21:00&#39;</span><span class="p">;</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1">-- time travel to snapshot with id 10963874102873L</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="w"> </span><span class="k">VERSION</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="mi">10963874102873</span><span class="p">;</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1">-- time travel to the head snapshot of audit-branch</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="w"> </span><span class="k">VERSION</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="s1">&#39;audit-branch&#39;</span><span class="p">;</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1">-- time travel to the snapshot referenced by the tag historical-snapshot</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="w"> </span><span class="k">VERSION</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="s1">&#39;historical-snapshot&#39;</span><span class="p">;</span>
+</code></pre></div>
+<p>In addition, <code>FOR SYSTEM_TIME AS OF</code> and <code>FOR SYSTEM_VERSION AS OF</code> clauses are also supported:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="n">SYSTEM_TIME</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="s1">&#39;1986-10-26 01:21:00&#39;</span><span class="p">;</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="n">SYSTEM_VERSION</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="mi">10963874102873</span><span class="p">;</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="n">SYSTEM_VERSION</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="s1">&#39;audit-branch&#39;</span><span class="p">;</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="n">SYSTEM_VERSION</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="s1">&#39;historical-snapshot&#39;</span><span class="p">;</span>
+</code></pre></div>
+<p>Timestamps may also be supplied as a Unix timestamp, in seconds:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1">-- timestamp in seconds</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="mi">499162860</span><span class="p">;</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="n">SYSTEM_TIME</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="mi">499162860</span><span class="p">;</span>
+</code></pre></div>
+<h4 id="dataframe">DataFrame</h4>
+<p>To select a specific table snapshot or the snapshot at some time in the DataFrame API, Iceberg supports four Spark read options:</p>
+<ul>
+<li><code>snapshot-id</code> selects a specific table snapshot</li>
+<li><code>as-of-timestamp</code> selects the current snapshot at a timestamp, in milliseconds</li>
+<li><code>branch</code> selects the head snapshot of the specified branch. Note that currently branch cannot be combined with as-of-timestamp.</li>
+<li><code>tag</code> selects the snapshot associated with the specified tag. Tags cannot be combined with <code>as-of-timestamp</code>.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1">// time travel to October 26, 1986 at 01:21:00</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">spark</span><span class="p">.</span><span class="n">read</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="p">.</span><span class="n">option</span><span class="p">(</span><span class="s">&quot;as-of-timestamp&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;499162860000&quot;</span><span class="p">)</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">    </span><span class="p">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;iceberg&quot;</span><span class="p">)</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;path/to/table&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1">// time travel to snapshot with ID 10963874102873L</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">spark</span><span class="p">.</span><span class="n">read</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="p">.</span><span class="n">option</span><span class="p">(</span><span class="s">&quot;snapshot-id&quot;</span><span class="p">,</span><span class="w"> </span><span class="il">10963874102873L</span><span class="p">)</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">    </span><span class="p">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;iceberg&quot;</span><span class="p">)</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">    </span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;path/to/table&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1">// time travel to tag historical-snapshot</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">spark</span><span class="p">.</span><span class="n">read</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">    </span><span class="p">.</span><span class="n">option</span><span class="p">(</span><span class="nc">SparkReadOptions</span><span class="p">.</span><span class="nc">TAG</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;historical-snapshot&quot;</span><span class="p">)</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">    </span><span class="p">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;iceberg&quot;</span><span class="p">)</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">    </span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;path/to/table&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1">// time travel to the head snapshot of audit-branch</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">spark</span><span class="p">.</span><span class="n">read</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="p">.</span><span class="n">option</span><span class="p">(</span><span class="nc">SparkReadOptions</span><span class="p">.</span><span class="nc">BRANCH</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;audit-branch&quot;</span><span class="p">)</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="p">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;iceberg&quot;</span><span class="p">)</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;path/to/table&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Spark 3.0 and earlier versions do not support using <code>option</code> with <code>table</code> in DataFrameReader commands. All options will be silently 
+ignored. Do not use <code>table</code> when attempting to time-travel or use other options. See <a href="https://issues.apache.org/jira/browse/SPARK-32592">SPARK-32592</a>.</p>
+</div>
+<h3 id="incremental-read">Incremental read</h3>
+<p>To read appended data incrementally, use:</p>
+<ul>
+<li><code>start-snapshot-id</code> Start snapshot ID used in incremental scans (exclusive).</li>
+<li><code>end-snapshot-id</code> End snapshot ID used in incremental scans (inclusive). This is optional. Omitting it will default to the current snapshot.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1">// get the data added after start-snapshot-id (10963874102873L) until end-snapshot-id (63874143573109L)</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">spark</span><span class="p">.</span><span class="n">read</span><span class="p">()</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="p">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;iceberg&quot;</span><span class="p">)</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="p">.</span><span class="n">option</span><span class="p">(</span><span class="s">&quot;start-snapshot-id&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;10963874102873&quot;</span><span class="p">)</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">  </span><span class="p">.</span><span class="n">option</span><span class="p">(</span><span class="s">&quot;end-snapshot-id&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;63874143573109&quot;</span><span class="p">)</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">  </span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;path/to/table&quot;</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Currently gets only the data from <code>append</code> operation. Cannot support <code>replace</code>, <code>overwrite</code>, <code>delete</code> operations.
+Incremental read works with both V1 and V2 format-version.
+Incremental read is not supported by Spark's SQL syntax.</p>
+</div>
+<h2 id="inspecting-tables">Inspecting tables</h2>
+<p>To inspect a table's history, snapshots, and other metadata, Iceberg supports metadata tables.</p>
+<p>Metadata tables are identified by adding the metadata table name after the original table name. For example, history for <code>db.table</code> is read using <code>db.table.history</code>.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>For Spark 3, prior to 3.2, the Spark <a href="../spark-configuration/#replacing-the-session-catalog">session catalog</a> does not support table names with multipart identifiers such as <code>catalog.database.table.metadata</code>. As a workaround, configure an <code>org.apache.iceberg.spark.SparkCatalog</code>, or use the Spark <code>DataFrameReader</code> API.</p>
+</div>
+<h3 id="history">History</h3>
+<p>To show table history:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="p">.</span><span class="n">history</span><span class="p">;</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>made_current_at</th>
+<th>snapshot_id</th>
+<th>parent_id</th>
+<th>is_current_ancestor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2019-02-08 03:29:51.215</td>
+<td>5781947118336215154</td>
+<td>NULL</td>
+<td>true</td>
+</tr>
+<tr>
+<td>2019-02-08 03:47:55.948</td>
+<td>5179299526185056830</td>
+<td>5781947118336215154</td>
+<td>true</td>
+</tr>
+<tr>
+<td>2019-02-09 16:24:30.13</td>
+<td>296410040247533544</td>
+<td>5179299526185056830</td>
+<td>false</td>
+</tr>
+<tr>
+<td>2019-02-09 16:32:47.336</td>
+<td>2999875608062437330</td>
+<td>5179299526185056830</td>
+<td>true</td>
+</tr>
+<tr>
+<td>2019-02-09 19:42:03.919</td>
+<td>8924558786060583479</td>
+<td>2999875608062437330</td>
+<td>true</td>
+</tr>
+<tr>
+<td>2019-02-09 19:49:16.343</td>
+<td>6536733823181975045</td>
+<td>8924558786060583479</td>
+<td>true</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p><strong>This shows a commit that was rolled back.</strong> The example has two snapshots with the same parent, and one is <em>not</em> an ancestor of the current table state.</p>
+</div>
+<h3 id="metadata-log-entries">Metadata Log Entries</h3>
+<p>To show table metadata log entries:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="p">.</span><span class="n">metadata_log_entries</span><span class="p">;</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>timestamp</th>
+<th>file</th>
+<th>latest_snapshot_id</th>
+<th>latest_schema_id</th>
+<th>latest_sequence_number</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2022-07-28 10:43:52.93</td>
+<td>s3://.../table/metadata/00000-9441e604-b3c2-498a-a45a-6320e8ab9006.metadata.json</td>
+<td>null</td>
+<td>null</td>
+<td>null</td>
+</tr>
+<tr>
+<td>2022-07-28 10:43:57.487</td>
+<td>s3://.../table/metadata/00001-f30823df-b745-4a0a-b293-7532e0c99986.metadata.json</td>
+<td>170260833677645300</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2022-07-28 10:43:58.25</td>
+<td>s3://.../table/metadata/00002-2cc2837a-02dc-4687-acc1-b4d86ea486f4.metadata.json</td>
+<td>958906493976709774</td>
+<td>0</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<h3 id="snapshots">Snapshots</h3>
+<p>To show the valid snapshots for a table:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="p">.</span><span class="n">snapshots</span><span class="p">;</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>committed_at</th>
+<th>snapshot_id</th>
+<th>parent_id</th>
+<th>operation</th>
+<th>manifest_list</th>
+<th>summary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2019-02-08 03:29:51.215</td>
+<td>57897183625154</td>
+<td>null</td>
+<td>append</td>
+<td>s3://.../table/metadata/snap-57897183625154-1.avro</td>
+<td>{ added-records -&gt; 2478404, total-records -&gt; 2478404, added-data-files -&gt; 438, total-data-files -&gt; 438, spark.app.id -&gt; application_1520379288616_155055 }</td>
+</tr>
+</tbody>
+</table>
+<p>You can also join snapshots to table history. For example, this query will show table history, with the application ID that wrote each snapshot:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">select</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">    </span><span class="n">h</span><span class="p">.</span><span class="n">made_current_at</span><span class="p">,</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span><span class="n">s</span><span class="p">.</span><span class="k">operation</span><span class="p">,</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="w">    </span><span class="n">h</span><span class="p">.</span><span class="n">snapshot_id</span><span class="p">,</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span><span class="n">h</span><span class="p">.</span><span class="n">is_current_ancestor</span><span class="p">,</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="w">    </span><span class="n">s</span><span class="p">.</span><span class="n">summary</span><span class="p">[</span><span class="s1">&#39;spark.app.id&#39;</span><span class="p">]</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="k">from</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="p">.</span><span class="n">history</span><span class="w"> </span><span class="n">h</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="k">join</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="p">.</span><span class="n">snapshots</span><span class="w"> </span><span class="n">s</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="w">  </span><span class="k">on</span><span class="w"> </span><span class="n">h</span><span class="p">.</span><span class="n">snapshot_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">snapshot_id</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">made_current_at</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>made_current_at</th>
+<th>operation</th>
+<th>snapshot_id</th>
+<th>is_current_ancestor</th>
+<th>summary[spark.app.id]</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2019-02-08 03:29:51.215</td>
+<td>append</td>
+<td>57897183625154</td>
+<td>true</td>
+<td>application_1520379288616_155055</td>
+</tr>
+<tr>
+<td>2019-02-09 16:24:30.13</td>
+<td>delete</td>
+<td>29641004024753</td>
+<td>false</td>
+<td>application_1520379288616_151109</td>
+</tr>
+<tr>
+<td>2019-02-09 16:32:47.336</td>
+<td>append</td>
+<td>57897183625154</td>
+<td>true</td>
+<td>application_1520379288616_155055</td>
+</tr>
+<tr>
+<td>2019-02-08 03:47:55.948</td>
+<td>overwrite</td>
+<td>51792995261850</td>
+<td>true</td>
+<td>application_1520379288616_152431</td>
+</tr>
+</tbody>
+</table>
+<h3 id="files">Files</h3>
+<p>To show a table's current data files:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="p">.</span><span class="n">files</span><span class="p">;</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>content</th>
+<th>file_path</th>
+<th>file_format</th>
+<th>spec_id</th>
+<th>partition</th>
+<th>record_count</th>
+<th>file_size_in_bytes</th>
+<th>column_sizes</th>
+<th>value_counts</th>
+<th>null_value_counts</th>
+<th>nan_value_counts</th>
+<th>lower_bounds</th>
+<th>upper_bounds</th>
+<th>key_metadata</th>
+<th>split_offsets</th>
+<th>equality_ids</th>
+<th>sort_order_id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>s3:/.../table/data/00000-3-8d6d60e8-d427-4809-bcf0-f5d45a4aad96.parquet</td>
+<td>PARQUET</td>
+<td>0</td>
+<td>{1999-01-01, 01}</td>
+<td>1</td>
+<td>597</td>
+<td>[1 -&gt; 90, 2 -&gt; 62]</td>
+<td>[1 -&gt; 1, 2 -&gt; 1]</td>
+<td>[1 -&gt; 0, 2 -&gt; 0]</td>
+<td>[]</td>
+<td>[1 -&gt; , 2 -&gt; c]</td>
+<td>[1 -&gt; , 2 -&gt; c]</td>
+<td>null</td>
+<td>[4]</td>
+<td>null</td>
+<td>null</td>
+</tr>
+<tr>
+<td>0</td>
+<td>s3:/.../table/data/00001-4-8d6d60e8-d427-4809-bcf0-f5d45a4aad96.parquet</td>
+<td>PARQUET</td>
+<td>0</td>
+<td>{1999-01-01, 02}</td>
+<td>1</td>
+<td>597</td>
+<td>[1 -&gt; 90, 2 -&gt; 62]</td>
+<td>[1 -&gt; 1, 2 -&gt; 1]</td>
+<td>[1 -&gt; 0, 2 -&gt; 0]</td>
+<td>[]</td>
+<td>[1 -&gt; , 2 -&gt; b]</td>
+<td>[1 -&gt; , 2 -&gt; b]</td>
+<td>null</td>
+<td>[4]</td>
+<td>null</td>
+<td>null</td>
+</tr>
+<tr>
+<td>0</td>
+<td>s3:/.../table/data/00002-5-8d6d60e8-d427-4809-bcf0-f5d45a4aad96.parquet</td>
+<td>PARQUET</td>
+<td>0</td>
+<td>{1999-01-01, 03}</td>
+<td>1</td>
+<td>597</td>
+<td>[1 -&gt; 90, 2 -&gt; 62]</td>
+<td>[1 -&gt; 1, 2 -&gt; 1]</td>
+<td>[1 -&gt; 0, 2 -&gt; 0]</td>
+<td>[]</td>
+<td>[1 -&gt; , 2 -&gt; a]</td>
+<td>[1 -&gt; , 2 -&gt; a]</td>
+<td>null</td>
+<td>[4]</td>
+<td>null</td>
+<td>null</td>
+</tr>
+</tbody>
+</table>
+<h3 id="manifests">Manifests</h3>
+<p>To show a table's current file manifests:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="p">.</span><span class="n">manifests</span><span class="p">;</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>path</th>
+<th>length</th>
+<th>partition_spec_id</th>
+<th>added_snapshot_id</th>
+<th>added_data_files_count</th>
+<th>existing_data_files_count</th>
+<th>deleted_data_files_count</th>
+<th>partition_summaries</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>s3://.../table/metadata/45b5290b-ee61-4788-b324-b1e2735c0e10-m0.avro</td>
+<td>4479</td>
+<td>0</td>
+<td>6668963634911763636</td>
+<td>8</td>
+<td>0</td>
+<td>0</td>
+<td>[[false,null,2019-05-13,2019-05-15]]</td>
+</tr>
+</tbody>
+</table>
+<p>Note:
+1. Fields within <code>partition_summaries</code> column of the manifests table correspond to <code>field_summary</code> structs within <a href="../../../spec/#manifest-lists">manifest list</a>, with the following order:
+    - <code>contains_null</code>
+    - <code>contains_nan</code>
+    - <code>lower_bound</code>
+    - <code>upper_bound</code>
+2. <code>contains_nan</code> could return null, which indicates that this information is not available from the file's metadata.
+    This usually occurs when reading from V1 table, where <code>contains_nan</code> is not populated.</p>
+<h3 id="partitions">Partitions</h3>
+<p>To show a table's current partitions:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="p">.</span><span class="n">partitions</span><span class="p">;</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>partition</th>
+<th>record_count</th>
+<th>file_count</th>
+<th>spec_id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>{20211001, 11}</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>{20211002, 11}</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>{20211001, 10}</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>{20211002, 10}</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>Note:
+1. For unpartitioned tables, the partitions table will contain only the record_count and file_count columns.</p>
+<ol>
+<li>The partitions metadata table shows partitions with data files or delete files in the current snapshot. However, delete files are not applied, and so in some cases partitions may be shown even though all their data rows are marked deleted by delete files.</li>
+</ol>
+<h3 id="all-metadata-tables">All Metadata Tables</h3>
+<p>These tables are unions of the metadata tables specific to the current snapshot, and return metadata across all snapshots.</p>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>The "all" metadata tables may produce more than one row per data file or manifest file because metadata files may be part of more than one table snapshot.</p>
+</div>
+<h4 id="all-data-files">All Data Files</h4>
+<p>To show all of the table's data files and each file's metadata:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="p">.</span><span class="n">all_data_files</span><span class="p">;</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>content</th>
+<th>file_path</th>
+<th>file_format</th>
+<th>partition</th>
+<th>record_count</th>
+<th>file_size_in_bytes</th>
+<th>column_sizes</th>
+<th>value_counts</th>
+<th>null_value_counts</th>
+<th>nan_value_counts</th>
+<th>lower_bounds</th>
+<th>upper_bounds</th>
+<th>key_metadata</th>
+<th>split_offsets</th>
+<th>equality_ids</th>
+<th>sort_order_id</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>s3://.../dt=20210102/00000-0-756e2512-49ae-45bb-aae3-c0ca475e7879-00001.parquet</td>
+<td>PARQUET</td>
+<td>{20210102}</td>
+<td>14</td>
+<td>2444</td>
+<td>{1 -&gt; 94, 2 -&gt; 17}</td>
+<td>{1 -&gt; 14, 2 -&gt; 14}</td>
+<td>{1 -&gt; 0, 2 -&gt; 0}</td>
+<td>{}</td>
+<td>{1 -&gt; 1, 2 -&gt; 20210102}</td>
+<td>{1 -&gt; 2, 2 -&gt; 20210102}</td>
+<td>null</td>
+<td>[4]</td>
+<td>null</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>s3://.../dt=20210103/00000-0-26222098-032f-472b-8ea5-651a55b21210-00001.parquet</td>
+<td>PARQUET</td>
+<td>{20210103}</td>
+<td>14</td>
+<td>2444</td>
+<td>{1 -&gt; 94, 2 -&gt; 17}</td>
+<td>{1 -&gt; 14, 2 -&gt; 14}</td>
+<td>{1 -&gt; 0, 2 -&gt; 0}</td>
+<td>{}</td>
+<td>{1 -&gt; 1, 2 -&gt; 20210103}</td>
+<td>{1 -&gt; 3, 2 -&gt; 20210103}</td>
+<td>null</td>
+<td>[4]</td>
+<td>null</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>s3://.../dt=20210104/00000-0-a3bb1927-88eb-4f1c-bc6e-19076b0d952e-00001.parquet</td>
+<td>PARQUET</td>
+<td>{20210104}</td>
+<td>14</td>
+<td>2444</td>
+<td>{1 -&gt; 94, 2 -&gt; 17}</td>
+<td>{1 -&gt; 14, 2 -&gt; 14}</td>
+<td>{1 -&gt; 0, 2 -&gt; 0}</td>
+<td>{}</td>
+<td>{1 -&gt; 1, 2 -&gt; 20210104}</td>
+<td>{1 -&gt; 3, 2 -&gt; 20210104}</td>
+<td>null</td>
+<td>[4]</td>
+<td>null</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<h4 id="all-manifests">All Manifests</h4>
+<p>To show all of the table's manifest files:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="p">.</span><span class="n">all_manifests</span><span class="p">;</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>path</th>
+<th>length</th>
+<th>partition_spec_id</th>
+<th>added_snapshot_id</th>
+<th>added_data_files_count</th>
+<th>existing_data_files_count</th>
+<th>deleted_data_files_count</th>
+<th>partition_summaries</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>s3://.../metadata/a85f78c5-3222-4b37-b7e4-faf944425d48-m0.avro</td>
+<td>6376</td>
+<td>0</td>
+<td>6272782676904868561</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>[{false, false, 20210101, 20210101}]</td>
+</tr>
+</tbody>
+</table>
+<p>Note:
+1. Fields within <code>partition_summaries</code> column of the manifests table correspond to <code>field_summary</code> structs within <a href="../../../spec/#manifest-lists">manifest list</a>, with the following order:
+    - <code>contains_null</code>
+    - <code>contains_nan</code>
+    - <code>lower_bound</code>
+    - <code>upper_bound</code>
+2. <code>contains_nan</code> could return null, which indicates that this information is not available from the file's metadata.
+    This usually occurs when reading from V1 table, where <code>contains_nan</code> is not populated.</p>
+<h3 id="references">References</h3>
+<p>To show a table's known snapshot references:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="p">.</span><span class="n">refs</span><span class="p">;</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th>name</th>
+<th>type</th>
+<th>snapshot_id</th>
+<th>max_reference_age_in_ms</th>
+<th>min_snapshots_to_keep</th>
+<th>max_snapshot_age_in_ms</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>main</td>
+<td>BRANCH</td>
+<td>4686954189838128572</td>
+<td>10</td>
+<td>20</td>
+<td>30</td>
+</tr>
+<tr>
+<td>testTag</td>
+<td>TAG</td>
+<td>4686954189838128572</td>
+<td>10</td>
+<td>null</td>
+<td>null</td>
+</tr>
+</tbody>
+</table>
+<h3 id="inspecting-with-dataframes">Inspecting with DataFrames</h3>
+<p>Metadata tables can be loaded using the DataFrameReader API:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1">// named metastore table</span>
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="n">spark</span><span class="p">.</span><span class="n">read</span><span class="p">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;iceberg&quot;</span><span class="p">).</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;db.table.files&quot;</span><span class="p">)</span>
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="c1">// Hadoop path table</span>
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="n">spark</span><span class="p">.</span><span class="n">read</span><span class="p">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;iceberg&quot;</span><span class="p">).</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;hdfs://nn:8020/path/to/table#files&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="time-travel-with-metadata-tables">Time Travel with Metadata Tables</h3>
+<p>To inspect a tables's metadata with the time travel feature:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1">-- get the table&#39;s file manifests at timestamp Sep 20, 2021 08:00:00</span>
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="p">.</span><span class="n">manifests</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="s1">&#39;2021-09-20 08:00:00&#39;</span><span class="p">;</span>
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a><span class="c1">-- get the table&#39;s partitions with snapshot id 10963874102873L</span>
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">prod</span><span class="p">.</span><span class="n">db</span><span class="p">.</span><span class="k">table</span><span class="p">.</span><span class="n">partitions</span><span class="w"> </span><span class="k">VERSION</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">OF</span><span class="w"> </span><span class="mi">10963874102873</span><span class="p">;</span>
+</code></pre></div>
+<p>Metadata tables can also be inspected with time travel using the DataFrameReader API:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1">// load the table&#39;s file metadata at snapshot-id 10963874102873 as DataFrame</span>
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="n">spark</span><span class="p">.</span><span class="n">read</span><span class="p">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;iceberg&quot;</span><span class="p">).</span><span class="n">option</span><span class="p">(</span><span class="s">&quot;snapshot-id&quot;</span><span class="p">,</span><span class="w"> </span><span class="il">10963874102873L</span><span class="p">).</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;db.table.files&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Apache Iceberg, Iceberg, Apache, the Apache feather logo, and the Apache Iceberg project logo are</br>either registered trademarks or trademarks of The Apache Software Foundation. Copyright &copy; 2023</br>The Apache Software Foundation, Licensed under the <a href="https://www.apache.org/licenses/">Apache License, Version 2.0</a>.</br></br>
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs", "navigation.path", "navigation.top", "navigation.tracking", "toc.follow", "search.suggest", "search.highlight", "content.tabs.link", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.74e28a9f.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.220ee61c.min.js"></script>
+      
+    
+  </body>
+</html>
