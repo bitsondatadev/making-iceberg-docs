@@ -1,0 +1,15 @@
+# https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/date-time-terms#abbreviating-units-of-time
+millis
+nanos
+\d[smnwy]
+\dns
+yrs
+wks
+secs
+hrs
+mos
+
+# https://learn.microsoft.com/en-us/style-guide/word-choice/avoid-jargon#testing-for-jargon
+[Cc]onfig
+[Pp]ythonic
+[Ss]emver # symantic versioning https://semver.org/

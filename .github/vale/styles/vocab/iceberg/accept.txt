@@ -1,0 +1,39 @@
+API
+Avro
+[Bb]ackport
+Cloudera
+[Cc]anonicalize
+[Cc]iphertext
+[Cc]lasspath
+[Cc]odec
+[Dd]ev
+Dremio
+[Ee]ndian
+Flink
+GitHub # the 'H' must be uppercased
+Gradle
+[Jj]avadoc
+Kryo(Serializer)?
+[Ll]akehouse
+[Mm]etastore[s|'s]?
+[Nn]amespace
+[Nn]ullable
+Nessie
+[Pp]laintext
+[Pp]luggable
+PostgreSQL # Postgres is a nickname
+[Pp]ushdown
+[Ss]erializable
+[Ss]erverless
+[Ss]ubstring
+Trino
+[Uu]nix # https://unix.stackexchange.com/a/532341
+UNIX
+[Uu]npartitioned
+[Uu]nparseable
+[Uu]psert
+(?i)uuid
+ya?ml
+YA?ML
+[Zz]order
+[Zz]std
